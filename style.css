@@ -1,0 +1,155 @@
+canvas{
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    font-family: "Elms Sans", sans-serif;
+}
+
+.icon-toolbar {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.icon-toolbar:active {
+    scale: 0.9;
+}
+
+#toolbar {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    width: fit-content;
+    display: flex;
+    z-index: 10;
+    background-color: white;
+    gap: 30px;
+}
+
+#toolbar-container {
+    position: absolute;
+    justify-content: center;
+}
+
+#drag-icon {
+    cursor: grab;
+}
+
+#canvas-container {
+    position: relative;
+}
+
+#pen-icon {
+    transition: 0.2s;
+}
+
+
+
+#pen-icon:active {
+    scale: 0.9;
+}
+
+#pen-thickness-display {
+    width: 100px;
+    background-color: black;
+    height: 1px;
+    border-radius: 1px;
+}
+
+#pen-thickness-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+
+#pen-settings {
+    opacity: 0;
+    transition: 0.5s;
+    gap: 45px;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px black solid;
+    border-radius: 10px;
+    display: flex;
+    user-select: none;
+
+}
+
+#pen-settings.show {
+    gap: 50px;
+    padding: 30px 30px;
+    align-items: center;
+    justify-content: center;
+    border: 1px black solid;
+    border-radius: 10px;
+    opacity: 1;
+}
+
+.settings-item-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+#eraser-settings {
+    position: relative;
+    user-select: none;
+    display: flex;
+    gap: 20px;
+    font-size: 15px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    transition: 0.5s;
+    opacity: 0;
+}
+
+#eraser-settings.show {
+    opacity: 1;
+}
+
+.eraser-setting-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    height: fit-content;
+    transition: 0.5s;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.eraser-setting-container:hover {
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.8);
+}
+
+.eraser-setting-container.selected {
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.8);
+}
+
+.icon {
+    height: 20.8px;
+    width: auto;
+}
+
+#pixel-eraser-thickness {
+    border-radius: 1px;
+    width: 1px;
+    height: 1px;
+    border: 1px solid black;
+}
+
+#clear-setting {
+    color: red;
+    fill: red;
+}
