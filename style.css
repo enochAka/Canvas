@@ -1,13 +1,17 @@
-canvas{
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    margin: 0;
+:root {
+    --selected-color: #ff0000;
 }
+
 
 body {
     margin: 0;
     font-family: "Elms Sans", sans-serif;
+}
+
+#pen-icon {
+    position: relative;
+    z-index: 99;
+    background-color: white;
 }
 
 .icon-toolbar {
@@ -20,20 +24,24 @@ body {
     scale: 0.9;
 }
 
-#toolbar {
-    border-radius: 10px;
-    padding: 10px;
-    border: 1px solid black;
-    width: fit-content;
-    display: flex;
-    z-index: 10;
-    background-color: white;
-    gap: 30px;
+#general-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+
+
+#drag-icon {
+    height: inherit;
+    width: inherit;
 }
 
 #toolbar-container {
     position: absolute;
-    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    top: 0;
+    left: 0;
 }
 
 #drag-icon {
@@ -41,8 +49,14 @@ body {
 }
 
 #canvas-container {
-    position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
+
 
 #pen-icon {
     transition: 0.2s;
@@ -56,9 +70,12 @@ body {
 
 #pen-thickness-display {
     width: 100px;
-    background-color: black;
-    height: 1px;
-    border-radius: 1px;
+    background-color: var(--selected-color);
+    height: 20px;
+    width: 20px;
+
+    border-radius: 50%;
+    transition: width 0.08s ease, height 0.08s ease;
 }
 
 #pen-thickness-container {
@@ -73,14 +90,15 @@ body {
     opacity: 0;
     transition: 0.5s;
     gap: 45px;
-    padding: 10px 0;
+    padding: 25px;
     align-items: center;
     justify-content: center;
     border: 1px black solid;
     border-radius: 10px;
     display: flex;
     user-select: none;
-
+    z-index: 4;
+    background-color: white;
 }
 
 #pen-settings.show {
@@ -91,6 +109,7 @@ body {
     border: 1px black solid;
     border-radius: 10px;
     opacity: 1;
+    z-index: 5;
 }
 
 .settings-item-container {
@@ -103,7 +122,7 @@ body {
 #eraser-settings {
     position: relative;
     user-select: none;
-    display: flex;
+    visibility: hidden;
     gap: 20px;
     font-size: 15px;
     border: 1px solid black;
@@ -111,10 +130,17 @@ body {
     padding: 10px;
     transition: 0.5s;
     opacity: 0;
+    display: flex;
+    z-index: 4;
+    background-color: white;
 }
 
 #eraser-settings.show {
     opacity: 1;
+    gap: 25px;
+    padding: 15px;
+    visibility: visible;
+    z-index: 5;
 }
 
 .eraser-setting-container {
@@ -153,3 +179,863 @@ body {
     color: red;
     fill: red;
 }
+
+#toolbar {
+    transform: translate(-50%, -50%) scale(1);
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid black;
+    width: 30px;
+    display: flex;
+    z-index: 10;
+    background-color: white;
+    transition: 0.3s;
+    z-index: 101;
+}
+
+#toolbar:hover {
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.1)
+}
+
+#toolbar:active {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.8);
+}
+
+#orbit{
+    position:relative;
+    width:300px;
+    height:300px;
+}
+
+#orbit {
+    position: relative;
+
+    width: 320px;
+    height: 320px;
+
+    pointer-events: none;
+}
+
+
+/* ================================================= */
+/* CENTRE TOOLBAR */
+/* ================================================= */
+
+#toolbar {
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5);
+
+    opacity: 0;
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 30px;
+    height: 30px;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid black;
+    border-radius: 50%;
+
+    background: white;
+
+    z-index: 100;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+#toolbar.show {
+    opacity: 1;
+}
+
+#toolbar:hover {
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.8);
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.05);
+}
+
+#toolbar:active {
+    box-shadow:  0 0 8px 2px rgba(0, 0, 0, 0.8);
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.95);
+}
+
+#toolbar:active .tool {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+
+#drag-icon {
+    width: 30px;
+    height: 30px;
+
+    cursor: grab;
+
+    pointer-events: auto;
+}
+
+
+.ring {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 20;
+}
+
+.ring.show {
+    pointer-events: auto;
+}
+
+
+.tool {
+    box-shadow:
+        0 0 3px 1px rgba(0, 0, 0, 0.5);
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 48px;
+    height: 48px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    opacity: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+
+    cursor: pointer;
+
+    z-index: 30;
+
+    border: 1px solid black;
+
+    transition:
+        left 0.5s ease,
+        top 0.5s ease,
+        transform 0.35s ease,
+        opacity 0.35s ease,
+        box-shadow 0.2s ease;
+}
+
+
+
+.tool.show {
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+
+    opacity: 1;
+}
+
+
+
+.tool:hover {
+    box-shadow:
+        0 0 5px 2px rgba(0, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+
+.tool-icon,
+.back-icon {
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+
+.tool-icon {
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
+
+.back-icon {
+    opacity: 0;
+
+    transform: scale(0.7);
+}
+
+.tool.selected {
+    position: absolute;
+
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 48px;
+    height: 48px;
+
+    opacity: 1 !important;
+
+    transform: translate(-50%, -50%) scale(1) !important;
+
+    z-index: 200;
+
+    pointer-events: auto;
+}
+
+
+/* BOTH icons start in the same place,
+   but only the normal icon is visible */
+
+.tool.selected .tool-icon {
+    position: absolute;
+
+    opacity: 1 !important;
+
+    z-index: 10000;
+
+    transform: scale(1) !important;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+/* Back arrow is NEVER visible normally */
+.tool .back-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none;
+    transform: scale(0.7);
+}
+
+
+/* Only the SELECTED tool can show its back arrow */
+.tool.selected .back-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+
+/* Only show the arrow when the SELECTED tool is hovered */
+.tool.selected:hover .back-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: scale(1);
+}
+/* HOVER:
+   pen disappears */
+
+.tool.selected:hover .tool-icon {
+    opacity: 0 !important;
+
+    transform: scale(0.7) !important;
+}
+
+
+/* HOVER:
+   arrow appears */
+
+.tool.selected:hover .back-icon {
+    opacity: 1 !important;
+
+    transform: scale(1) !important;
+}
+
+
+/* Centre toolbar disappears when closed */
+
+#toolbar:not(.show) {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.ring.show {
+    pointer-events: auto;
+}
+
+.ring:not(.show) {
+    pointer-events: none;
+}
+
+.pcr-button {
+    width: 20px !important;
+    height: 20px !important;
+
+    border-radius: 50% !important;
+
+    overflow: hidden;
+    border: none !important;
+
+    box-shadow: none !important;
+}
+
+.pickr {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool.selected {
+    pointer-events: auto;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+.tool.selected:hover {
+    cursor: pointer;
+}
+
+#color-preview {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ff0000;
+}
+
+#color-picker-container {
+    pointer-events: none;
+    opacity: 0;
+
+    position: fixed;
+    z-index: 10000;
+
+    transition:
+        opacity 0.5s ease
+    ;
+
+    background: #18191d;
+    border: 1px solid #2b2d33;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+/* Actual slider */
+
+#stroke-width {
+
+    left: var(--inset);
+    top: 0;
+
+    width: 120px;
+    height: 32px;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: transparent;
+
+    pointer-events: all;
+    cursor: pointer;
+
+    transition: 
+        opacity 0.2s ease-in-out;
+}
+
+
+/* Hide native track */
+
+#stroke-width::-webkit-slider-runnable-track {
+    padding: 0 2.5px;
+
+    height: 19px;
+
+    background: rgba(231, 232, 235, 0.1);
+    border: 1px solid #e7e8eb;
+
+    border-radius: 19px;
+}
+
+
+/* Thumb */
+
+#stroke-width::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 13px;
+    height: 13px;
+
+    margin-top: 2.5px;
+
+    border: 2px solid #e7e8eb;
+    border-radius: 50%;
+
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+}
+
+
+#stroke-width::-webkit-slider-thumb:hover {
+    transform: scale(1.12);
+
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+#pen-thickness-container {
+    overflow: hidden;
+    padding: 10px 0;
+    height: fit-content;
+    min-height: 28px;
+}
+
+.color {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+
+    border: 1px solid rgba(255,255,255,.25);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.color:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 3px rgba(255,255,255,.12);
+}
+
+#base-colors {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    padding: 0;
+}
+
+.recent-color {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    border: #000 solid 1px;
+}
+
+#recent-colors {
+    list-style-type: none;
+    display: flex;
+    gap: 10px;
+    padding: 0;
+}
+
+#color-picker-container {
+    display: flex;
+    gap: 20px;
+}
+
+#color-values {
+    display: flex;
+    gap: 10px;
+}
+
+#color-values h3 {
+    margin: 5px 0;
+}
+
+#recent-colors-filler {
+    font-size: 13px;
+    margin: 0;
+    opacity: 0.4;
+    color: #fff;
+}
+
+#favourite-colors-filler {
+    font-size: 13px;
+    margin: 0;
+    opacity: 0.4;
+    color: #fff;
+}
+
+.favourite-icons {
+    opacity: 0;
+    position: absolute;
+    transition: 
+        opacity 0.2s ease;
+    width: 25px;
+    height: 25px;
+}
+
+#favourite-icon {
+    opacity: 1;
+}
+
+#favourite-colors {
+    display: flex;
+    gap: 10px;
+    padding: 0;
+    width: fit-content;
+}
+
+.favourite-color {
+    list-style-type: none;
+}
+
+.color-section-heading {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #e7e8eb;
+    margin-bottom: 10px;
+    margin: 0;
+}
+
+.color-texts {
+    cursor: text;
+    border-radius: 6px;
+    padding: 3px 5px;
+    outline: none;
+    color: #e7e8eb;
+}
+
+.color-texts[contenteditable="true"] {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+#favourite-colors-header {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+#favourite-button {
+    width: 25px;
+    height: 25px;
+}
+
+#color-information {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.color {
+    position: relative;
+    cursor: pointer;
+}
+
+.color::after {
+    content: attr(data-color-name) "\A" attr(data-color);
+    
+    white-space: pre;
+    
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    
+    transform: translateX(-50%) translateY(5px);
+    
+    padding: 8px 10px;
+
+    background: #24252a;
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 7px;
+
+    font-size: 12px;
+    line-height: 1.4;
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition: 
+        opacity 0.15s ease,
+        transform 0.15s ease;
+
+    z-index: 9999;
+}
+
+.color:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.color-tooltip {
+    position: absolute;
+
+    bottom: calc(100% + 10px);
+    left: 50%;
+
+    transform: translateX(-50%) translateY(5px);
+
+    padding: 7px 10px;
+
+    background: #202126;
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    white-space: nowrap;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+
+    z-index: 100;
+}
+
+.color:hover .color-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.color-tooltip-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.color-tooltip-hex {
+    color: #aeb0b8;
+    font-size: 11px;
+}
+
+#color-picker-container {
+    background:
+        linear-gradient(
+            rgba(255, 255, 255, 0.02),
+            rgba(255, 255, 255, 0.02)
+        ),
+        color-mix(in srgb, var(--selected-color) 8%, #181818);
+}
+
+#color-picker-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: var(--selected-color);
+
+    opacity: 0.06;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+#color-picker-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.tool-settings {
+    opacity: 0;
+    transition: 
+        opacity 0.2s;
+}
+
+#pen-thickness-settings-container {
+    position: fixed;
+    width: fit-content;
+
+    background: color-mix(
+        in srgb,
+        var(--selected-color) 8%,
+        #303030
+    );
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    opacity: 0;
+    pointer-events: none;
+
+    padding: 10px 15px;
+}
+
+.pen-thickness-display-text.first-ring {
+    color: #000;
+}
+
+.pen-thickness-display-text.second-ring {
+    color: #e7e8eb;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0 15px;
+}
+
+#stroke-width-value-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 35px;
+    height: 22px;
+
+    background: rgba(72, 72, 72, 0.3);
+    border-radius: 6px;
+}
+
+#stroke-width-value {
+    width: 17px;
+
+    border: none;
+    outline: none;
+    background: transparent;
+
+    color: white;
+    font: inherit;
+    font-size: 13px;
+    text-align: right;
+    padding: 0;
+
+
+}
+
+#pen-thickness-settings-container:has(#stroke-width-value:focus) #stroke-width-value-container  {
+    
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    
+}
+
+#stroke-width-value-container span {
+    color: white;
+    font-size: 13px;
+}
+
+#eraser-type-list-container {
+    background: #fff;
+    border-radius: 20px;
+    border: #000 1px solid;
+
+    align-items: center;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: fixed;
+
+    opacity: 0;
+    pointer-events: none;
+
+    padding: 10px 15px;
+
+    width: 320px;
+    height: 220px;
+    overflow-y: auto;
+
+    z-index: 23;
+}
+
+.eraser-type-container {
+    list-style: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    width: 270px;
+    gap: 20px;
+    cursor: pointer;
+    border-radius: 15px;
+    padding: 15px;
+    transition: 
+        scale 0.3s,
+        box-shadow 0.2s;
+}
+
+#eraser-type-title {
+    margin: 0;
+    font-weight: 500;
+}
+
+.eraser-type-container:hover {
+    scale: 1.02;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+}
+
+.eraser-type-container.selected {
+    background: rgba(0, 0, 0, 0.05);
+    border: #888 1px solid;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+    transition: 
+        box-shadow 0.2s ease,
+        scale 0.2s ease;
+}
+
+.eraser-type-container.selected:hover {
+    scale: 1.05;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+}
+
+.eraser-type-icons {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.eraser-type-texts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.eraser-type-description {
+    font-style: italic;
+    font-weight: 200;
+    font-size: 12px;
+
+    margin-left: 10px;
+}
+
+#eraser-type-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#eraser-type-list-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#eraser-type-list-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
