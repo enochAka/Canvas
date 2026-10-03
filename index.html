@@ -165,17 +165,21 @@
                 </div>
                 
                 <div class="tool-settings" id="pen-thickness-settings-container" data-angle="0" data-source-button="pen-thickness-container">
-                    <input type="range" id="stroke-width" min="1" max="50"  value="20"/>
-                    <div id="stroke-width-value-container">
-                        <input
-                            id="stroke-width-value"
-                            type="text"
-                            value="20"
-                            inputmode="numeric"
-                        >
-                        <span>px</span>
+                    <div id="pen-thickness-input-container">
+                        <input type="range" id="stroke-width" min="1" max="50"  value="20"/>
+                        <div id="stroke-width-value-container">
+                            <input
+                                id="stroke-width-value"
+                                type="text"
+                                value="20"
+                                inputmode="numeric"
+                            >
+                            <span>px</span>
+                        </div>
                     </div>
-                    <div id="pen-thickness-display"></div>
+                    <div id="pen-thickness-display-container">
+                        <div id="pen-thickness-display"></div>
+                    </div>
                 </div>
 
                 <ul class="tool-settings" id="eraser-type-list-container" data-angle="180" data-source-button="eraser-type-menu">

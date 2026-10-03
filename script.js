@@ -567,6 +567,16 @@ colorPickerIro.on("color:change", (color) => {
     rgbColor.innerHTML = color.rgbString;
     hslColor.innerHTML = color.hslString;
 
+    let [r, g, b] = rgbColor.innerHTML.replace("rgb(", "").replace(")", "").replace(" ", "").split(",")
+
+    console.log(r, g, b)
+    
+    if (r > 220 && g > 220 && b > 220) {
+        thicknessDisplay.style.border = "1px solid black";
+    } else {
+        thicknessDisplay.style.border = "none";
+    }
+
 
     // Update the input currently being edited
     if (activeColorInput) {
@@ -588,7 +598,6 @@ colorPickerIro.on("color:change", (color) => {
     updateFavouriteButton();
 
 });
-
 toolSettings.forEach((setting) => {
 
     let isToolSettingShowing = false;
@@ -605,166 +614,200 @@ toolSettings.forEach((setting) => {
     }
 
 
+    // -------------------------
+    // OPEN / CLOSE SETTING
+    // -------------------------
+
     toolSource.addEventListener("click", (e) => {
 
+        // IMPORTANT:
+        // Prevent this click from reaching the document
         e.stopPropagation();
 
-        isToolSettingShowing = !isToolSettingShowing;
 
+        // -------------------------
+        // CLOSE IF ALREADY OPEN
+        // -------------------------
 
         if (isToolSettingShowing) {
 
-            const sourceRect =
-                toolSource.getBoundingClientRect();
-
-
-            // -------------------------
-            // ANGLE
-            // -------------------------
-
-            const angle =
-                Number(setting.dataset.angle);
-
-            const radians =
-                angle * Math.PI / 180;
-
-
-            // 0° = top
-            // 90° = right
-            // 180° = bottom
-            // 270° = left
-
-            const dirX =
-                Math.sin(radians);
-
-            const dirY =
-                -Math.cos(radians);
-
-
-            // -------------------------
-            // SOURCE CENTER
-            // -------------------------
-
-            const sourceX =
-                sourceRect.left +
-                sourceRect.width / 2;
-
-            const sourceY =
-                sourceRect.top +
-                sourceRect.height / 2;
-
-
-            // -------------------------
-            // SETTING SIZE
-            // -------------------------
-
-            const width =
-                setting.offsetWidth;
-
-            const height =
-                setting.offsetHeight;
-
-
-            // -------------------------
-            // GAP
-            // -------------------------
-
-            let gap = 30;
-
-            
-                        
-
-
-            // -------------------------
-            // FIND EDGE
-            // -------------------------
-
-            const scaleX =
-                dirX === 0
-                    ? Infinity
-                    : (width / 2) /
-                      Math.abs(dirX);
-
-            const scaleY =
-                dirY === 0
-                    ? Infinity
-                    : (height / 2) /
-                      Math.abs(dirY);
-
-
-            const distance =
-                Math.min(scaleX, scaleY);
-
-
-            // -------------------------
-            // SETTING CENTER
-            // -------------------------
-
-            const settingCenterX =
-                sourceX +
-                dirX * (distance + gap);
-
-            const settingCenterY =
-                sourceY +
-                dirY * (distance + gap);
-
-
-            // -------------------------
-            // POSITION
-            // -------------------------
-
-            setting.style.left =
-                `${settingCenterX - width / 2}px`;
-
-            setting.style.top =
-                `${settingCenterY - height / 2}px`;
-
-
-            // -------------------------
-            // SHOW
-            // -------------------------
-
-            setting.style.opacity = "1";
-            setting.style.pointerEvents = "all";
-            setting.style.zIndex = "21";
-
-            
-                    
-
-        } else {
-
-            // -------------------------
-            // HIDE
-            // -------------------------
+            isToolSettingShowing = false;
 
             setting.style.opacity = "0";
             setting.style.pointerEvents = "none";
+
+            return;
         }
+
+
+        // -------------------------
+        // OPEN
+        // -------------------------
+
+        isToolSettingShowing = true;
+
+
+        // -------------------------
+        // SOURCE RECT
+        // -------------------------
+
+        const sourceRect =
+            toolSource.getBoundingClientRect();
+
+
+        // -------------------------
+        // ANGLE
+        // -------------------------
+
+        const angle =
+            Number(setting.dataset.angle);
+
+        const radians =
+            angle * Math.PI / 180;
+
+
+        // 0° = top
+        // 90° = right
+        // 180° = bottom
+        // 270° = left
+
+        const dirX =
+            Math.sin(radians);
+
+        const dirY =
+            -Math.cos(radians);
+
+
+        // -------------------------
+        // SOURCE CENTER
+        // -------------------------
+
+        const sourceX =
+            sourceRect.left +
+            sourceRect.width / 2;
+
+        const sourceY =
+            sourceRect.top +
+            sourceRect.height / 2;
+
+
+        // -------------------------
+        // SETTING SIZE
+        // -------------------------
+
+        const width =
+            setting.offsetWidth;
+
+        const height =
+            setting.offsetHeight;
+
+
+        // -------------------------
+        // GAP
+        // -------------------------
+
+        const gap = 30;
+
+
+        // -------------------------
+        // FIND EDGE
+        // -------------------------
+
+        const scaleX =
+            dirX === 0
+                ? Infinity
+                : (width / 2) /
+                  Math.abs(dirX);
+
+        const scaleY =
+            dirY === 0
+                ? Infinity
+                : (height / 2) /
+                  Math.abs(dirY);
+
+
+        const distance =
+            Math.min(scaleX, scaleY);
+
+
+        // -------------------------
+        // SETTING CENTER
+        // -------------------------
+
+        const settingCenterX =
+            sourceX +
+            dirX * (distance + gap);
+
+        const settingCenterY =
+            sourceY +
+            dirY * (distance + gap);
+
+
+        // -------------------------
+        // POSITION
+        // -------------------------
+
+        setting.style.left =
+            `${settingCenterX - width / 2}px`;
+
+        setting.style.top =
+            `${settingCenterY - height / 2}px`;
+
+
+        // -------------------------
+        // SHOW
+        // -------------------------
+
+        setting.style.opacity = "1";
+        setting.style.pointerEvents = "all";
+        setting.style.zIndex = "21";
 
     });
 
-    
+
+    // -------------------------
+    // CLICK INSIDE SETTING
+    // -------------------------
+
+    setting.addEventListener("click", (e) => {
+
+        // Clicking the setting itself
+        // should NOT close it
+        e.stopPropagation();
+
+    });
+
+
+    // -------------------------
+    // STROKE WIDTH
+    // -------------------------
+
     strokeWidth.addEventListener("input", () => {
-        const value = Number(strokeWidth.value);
+
+        const value =
+            Number(strokeWidth.value);
 
         console.log(value);
 
-        thicknessDisplay.style.height = value + "px";
-        thicknessDisplay.style.width = value + "px";
 
-        const height = thicknessDisplayContainer.offsetHeight;
+        thicknessDisplay.style.height =
+            value + "px";
+
+        thicknessDisplay.style.width =
+            value + "px";
+
+
+        const height =
+            thicknessDisplayContainer.offsetHeight;
+
 
         if (height > 48) {
-            thicknessDisplayContainer.style.width = height + "px";
+
+            thicknessDisplayContainer.style.width =
+                height + "px";
+
         }
-    });
 
-
-    // Don't let clicking the slider
-    // trigger the outside click
-
-    setting.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
     });
 
 
@@ -774,70 +817,116 @@ toolSettings.forEach((setting) => {
 
     let firstClick = true;
 
-    document.addEventListener("mousedown", () => {
+    document.addEventListener("click", () => {
 
-        if (!isToolSettingShowing) return;
+        // Nothing is open
+        if (!isToolSettingShowing) {
+            return;
+        }
+
+
+        // -------------------------
+        // CLOSE
+        // -------------------------
+
+        isToolSettingShowing = false;
 
         setting.style.opacity = "0";
         setting.style.pointerEvents = "none";
 
+
+        // -------------------------
+        // COLOR PICKER
+        // -------------------------
+
         if (setting == colorPickerContainer) {
 
-            const color = colorPickerIro.color.hexString;
+            const color =
+                colorPickerIro.color.hexString;
+
 
             const previousColors =
                 document.querySelectorAll(".recent-color");
 
+
             let existingColor = null;
 
 
-            // Check if the color already exists
+            // -------------------------
+            // CHECK IF COLOR EXISTS
+            // -------------------------
+
             previousColors.forEach((recentColor) => {
 
-                if (recentColor.dataset.color === color) {
+                if (
+                    recentColor.dataset.color === color
+                ) {
 
                     existingColor = recentColor;
+
                 }
 
             });
 
+
+            // -------------------------
+            // REMOVE FILLER
+            // -------------------------
+
             if (firstClick) {
-                recentColorsFiller.parentElement.removeChild(recentColorsFiller);
+
+                if (recentColorsFiller) {
+
+                    recentColorsFiller.parentElement
+                        .removeChild(recentColorsFiller);
+
+                }
+
                 firstClick = false;
+
             }
 
 
-            // If it already exists, move it to the front
+            // -------------------------
+            // EXISTING COLOR
+            // -------------------------
+
             if (existingColor) {
 
                 recentColors.prepend(existingColor);
 
                 return;
+
             }
 
-            
 
-
-            // Otherwise create a new color
-            
+            // -------------------------
+            // CREATE NEW COLOR
+            // -------------------------
 
             const newColor =
                 document.createElement("li");
+
 
             newColor.classList.add(
                 "recent-color",
                 "color"
             );
 
+
             newColor.setAttribute(
                 "data-color",
                 color
             );
 
+
             newColor.style.backgroundColor =
                 color;
 
 
+            // -------------------------
+            // NEW COLOR CLICK
+            // -------------------------
 
             newColor.addEventListener("click", () => {
 
@@ -848,18 +937,26 @@ toolSettings.forEach((setting) => {
             });
 
 
+            // -------------------------
+            // ADD TO RECENT COLORS
+            // -------------------------
+
             recentColors.prepend(newColor);
 
             setupColorTooltip(newColor);
 
+
+            // -------------------------
+            // MAX 8 COLORS
+            // -------------------------
+
             if (recentColors.children.length > 8) {
+
                 recentColors.lastElementChild.remove();
+
             }
+
         }
-
-                
-
-        //isToolSettingShowing = false;
 
     });
 
@@ -898,6 +995,16 @@ strokeWidth.addEventListener("input", () => {
 
     document.querySelectorAll(".pen-thickness-display-text").forEach((text) => {text.textContent =
         value + "px";})
+    
+    let [r, g, b] = rgbColor.innerHTML.replace("rgb(", "").replace(")", "").replace(" ", "").split(",")
+
+    console.log(r, g, b)
+    
+    if (r > 220 && g > 220 && b > 220 || strokeThicknessValue < 10) {
+        thicknessDisplay.style.border = "1px solid black";
+    } else {
+        thicknessDisplay.style.border = "none";
+    }
 });
 
 colors.forEach((color) => {
